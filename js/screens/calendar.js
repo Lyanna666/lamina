@@ -1,86 +1,72 @@
-import { el } from "../dom.js";
-import { router } from "../router.js";
 import { store } from "../store.js";
 
 export const CalendarScreen = {
   css: "css/screens/calendar.css",
   
   render() {
-    const root = el("div", { class: "calendar_screen" });
+    const root = document.createElement("div");
+    root.className = "calendar_screen";
     
-    const calendarWrap = el("div", { class: "calendar_wrap" });
-    const year = el("div", { class: "calendar_year", text: "2026" });
-    const month = el("div", { class: "calendar_month", text: "ENERO" });
+    const flip = document.createElement("div");
+    flip.className = "flip";
+    flip.innerHTML = `
+      <div class="top"><span>2026</span></div>
+      <div class="bottom"><span>2026</span></div>
+    `;
     
-    calendarWrap.appendChild(year);
-    calendarWrap.appendChild(month);
-    
-    root.appendChild(calendarWrap);
-    
+    root.appendChild(flip);
     return root;
   },
   
   mount(rootEl) {
-    const yearEl = rootEl.querySelector(".calendar_year");
-    const monthEl = rootEl.querySelector(".calendar_month");
-    const calendarWrap = rootEl.querySelector(".calendar_wrap");
-    
-    const months = [
-      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
-    ];
-    
+    const flipEl = rootEl.querySelector(".flip");
     let currentYear = 2026;
-    let currentMonth = 0; // Enero
+    let currentDelay = 1200;
+    const minDelay = 200;
+    const acceleration = 0.88;
+    let timeoutId;
     
-    const animatePageFall = () => {
-      // Crear hoja que cae
-      const fallingPage = el("div", { class: "calendar_page_falling" });
-      fallingPage.innerHTML = `
-        <div class="calendar_year">${currentYear}</div>
-        <div class="calendar_month">${months[currentMonth]}</div>
-      `;
-      
-      calendarWrap.appendChild(fallingPage);
-      
-      // Eliminar la hoja después de la animación
-      setTimeout(() => {
-        fallingPage.remove();
-      }, 800);
-      
-      // Retroceder mes
-      currentMonth--;
-      
-      if (currentMonth < 0) {
-        currentYear--;
-        currentMonth = 11; // Diciembre
-      }
-      
-      // Actualizar calendario principal
-      yearEl.textContent = currentYear;
-      monthEl.textContent = months[currentMonth];
-      
-      // Si llegamos a 2016, detener
-      if (currentYear < 2016) {
-        clearInterval(interval);
-        
-        // Guardar progreso y avanzar a siguiente pantalla
+    function flipYear() {
+      if (currentYear <= 2016) {
         setTimeout(() => {
           store.updateProgress({ screenId: "next_screen" });
-          // router.go("next_screen"); // Descomentar cuando exista
-          console.log("Llegamos a 2016 - siguiente pantalla");
-        }, 1000);
+          console.log("Llegamos a 2016");
+        }, 1500);
+        return;
       }
-    };
+      
+      const nextYear = currentYear - 1;
+      
+      // Crear elementos animados
+      const flipTop = document.createElement("div");
+      flipTop.className = "flip-top";
+      flipTop.innerHTML = `<span>${currentYear}</span>`;
+      
+      const flipBottom = document.createElement("div");
+      flipBottom.className = "flip-bottom";
+      flipBottom.innerHTML = `<span>${nextYear}</span>`;
+      
+      flipEl.appendChild(flipTop);
+      flipEl.appendChild(flipBottom);
+      
+      // Actualizar los elementos fijos
+      setTimeout(() => {
+        flipEl.querySelector(".top span").textContent = nextYear;
+        flipEl.querySelector(".bottom span").textContent = nextYear;
+        flipTop.remove();
+        flipBottom.remove();
+        
+        currentYear = nextYear;
+        currentDelay = Math.max(minDelay, currentDelay * acceleration);
+        timeoutId = setTimeout(flipYear, currentDelay);
+      }, 900);
+    }
     
-    // Comenzar animación después de un momento
-    setTimeout(() => {
-      const interval = setInterval(animatePageFall, 400);
-    }, 500);
+    timeoutId = setTimeout(flipYear, 1000);
     
     return {
       cleanup() {
-        // Limpiar si es necesario
+        if (timeoutId) clearTimeout(timeoutId);
       }
     };
   }

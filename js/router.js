@@ -28,6 +28,12 @@ export const router = {
       currentStyleEl = document.createElement('link');
       currentStyleEl.rel = 'stylesheet';
       currentStyleEl.href = screen.css;
+      
+      // Manejar errores de carga sin bloquear
+      currentStyleEl.onerror = () => {
+        console.warn(`CSS no encontrado: ${screen.css}`);
+      };
+      
       document.head.appendChild(currentStyleEl);
     }
     

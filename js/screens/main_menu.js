@@ -103,7 +103,6 @@ function promptNewGame(){
 }
 
 export const MainMenuScreen = {
-  css: "css/screens/main_menu.css",
   
   render(){
     const root = el("div", { class: "ui_screen" });
