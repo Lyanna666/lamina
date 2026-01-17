@@ -1,7 +1,7 @@
 // js/store.js
 // Store oficial de Recuerdo Olvidado
 // - 3 slots de partida
-// - nombre, progreso (chapterId/sceneId), timestamps
+// - nombre, progreso (screenId), timestamps
 // - activeSlot
 // - persistencia en localStorage
 
@@ -30,8 +30,7 @@ function makeNewSlot(name) {
   return {
     name: String(name || "Partida").trim() || "Partida",
     progress: {
-      chapterId: "chapter_00",
-      sceneId: "scene_00",
+      screenId: "calendar",  // Pantalla inicial
     },
     createdAt: nowISO(),
     updatedAt: nowISO(),
@@ -94,14 +93,11 @@ export const store = {
     return i;
   },
 
-  // Actualiza progreso (capítulo/escena)
-  updateProgress({ chapterId, sceneId }) {
+  // Actualiza progreso (pantalla actual)
+  updateProgress({ screenId }) {
     const slot = this.getActiveSlot();
     if (!slot) throw new Error("No active slot");
-    slot.progress = {
-      chapterId: chapterId ?? slot.progress.chapterId,
-      sceneId: sceneId ?? slot.progress.sceneId,
-    };
+    slot.progress.screenId = screenId ?? slot.progress.screenId;
     slot.updatedAt = nowISO();
     this.save();
   },

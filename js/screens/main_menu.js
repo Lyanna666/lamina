@@ -2,10 +2,9 @@ import { el, clear } from "../dom.js";
 import { store } from "../store.js";
 import { router } from "../router.js";
 
-function chapterLabel(progress){
-  const c = progress?.chapterId || "chapter_00";
-  const s = progress?.sceneId || "scene_00";
-  return `Progreso: ${c} · ${s}`;
+function screenLabel(progress){
+  const screenId = progress?.screenId || "calendar";
+  return `Progreso: ${screenId}`;
 }
 
 function openModal(contentEl){
@@ -50,7 +49,7 @@ function promptNewGame(){
     [0,1,2].forEach(i => {
       const s = store.getSlot(i);
       const title = s ? `Sustituir: ${s.name}` : `Sustituir: Partida ${i+1}`;
-      const meta = s ? chapterLabel(s.progress) : "Vacía";
+      const meta = s ? screenLabel(s.progress) : "Vacía";
 
       const btn = el("button", { class: "ui_slot_btn" }, [
         el("div", {}, [
@@ -94,13 +93,18 @@ function promptNewGame(){
     else store.createNewGame({ name });
 
     close();
-    router.go("main_menu");
+    
+    // Ir directamente a la primera pantalla (calendar)
+    const slot = store.getActiveSlot();
+    router.go(slot.progress.screenId);
   });
 
   setTimeout(() => input.focus(), 0);
 }
 
 export const MainMenuScreen = {
+  css: "css/screens/main_menu.css",
+  
   render(){
     const root = el("div", { class: "ui_screen" });
     const panel = el("div", { class: "ui_panel" });
@@ -122,7 +126,7 @@ export const MainMenuScreen = {
         const s = store.getSlot(i);
 
         const title = s ? `Partida ${i+1}: ${s.name}` : `Partida ${i+1}: (vacía)`;
-        const meta = s ? chapterLabel(s.progress) : "Crea una nueva partida para empezar.";
+        const meta = s ? screenLabel(s.progress) : "Crea una nueva partida para empezar.";
 
         const btn = el("button", {
           class: "ui_slot_btn",
@@ -138,8 +142,8 @@ export const MainMenuScreen = {
         btn.addEventListener("click", () => {
           if (!s) return;
           store.setActiveSlot(i);
-          // por ahora: placeholder
-          alert(`Continuar: ${s.name}\n${chapterLabel(s.progress)}`);
+          // Ir a la pantalla guardada
+          router.go(s.progress.screenId);
         });
 
         slotsWrap.appendChild(btn);
