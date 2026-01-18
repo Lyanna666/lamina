@@ -1,0 +1,136 @@
+/* css/screens/salon.css */
+
+.salon_scene {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fondo del salón */
+.salon_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Overlay para atenuar el fondo */
+.salon_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 12, 8, 0.8);
+  z-index: 2;
+}
+
+/* Contenedor de personajes */
+.salon_characters {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Ángel (izquierda) */
+.character_angel {
+  position: absolute;
+  bottom: 0;
+  left: 3%;
+  height: 75vh;
+  width: 50%;
+  object-fit: contain;
+  object-position: right;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+}
+
+/* Luz (derecha) */
+.character_luz {
+  position: absolute;
+  bottom: 0;
+  right: 3%;
+  height: 70vh;
+  width: 50%;
+  object-fit: contain;
+  object-position: left;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+}
+
+/* Caja de diálogo (arriba) */
+.dialogue_box {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 900px;
+  background: rgba(20, 12, 8, 0.92);
+  border: 3px solid rgba(231, 196, 122, 0.8);
+  border-radius: 16px;
+  padding: 24px 28px;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+}
+
+/* Cuándo habla Ángel (izquierda) */
+.dialogue_box.speaker_angel {
+
+}
+
+/* Cuándo habla Luz (derecha) */
+.dialogue_box.speaker_luz {
+
+}
+
+/* Nombre del que habla */
+.dialogue_name {
+  font-family: "Cinzel", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(231, 196, 122, 1);
+  margin-bottom: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Texto del diálogo */
+.dialogue_text {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  line-height: 1.6;
+  color: #f5eadc;
+  min-height: 60px;
+}
+
+/* Flecha de continuar */
+.dialogue_arrow {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  font-size: 28px;
+  color: rgba(231, 196, 122, 0.9);
+  animation: arrowBlink 1s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes arrowBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Estado: esperando click */
+.dialogue_box.waiting {
+  cursor: pointer;
+}
+
+.dialogue_box.waiting:hover {
+  background: rgba(20, 12, 8, 0.95);
+}

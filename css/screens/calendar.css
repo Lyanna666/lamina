@@ -1,91 +1,119 @@
 /* css/screens/calendar.css */
 
-.calendar_screen {
+.calendar_screen{
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, #f5eadc 0%, #e8d5c0 100%);
-  overflow: hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background: transparent; /* usa el fondo del body (app.css) */
 }
 
-.flip {
-  position: relative;
-  width: 500px;
-  height: 250px;
+.calendar_year{
+  display:flex;
+  align-items:center;          /* <-- CAMBIO */
+  justify-content:center;
+  line-height: 1;              /* <-- importante */
+
   font-family: "Cinzel", serif;
   font-size: 180px;
   font-weight: 700;
-  color: #2a1a12;
-  text-align: center;
-  perspective: 1000px;
+  line-height: 1;
+  letter-spacing: 2px;
+
+  color: var(--text); /* viene de app.css :contentReference[oaicite:0]{index=0} */
+  text-shadow: 0 14px 40px rgba(0,0,0,0.65);
+
+  opacity: 1;
+  transition: opacity 220ms ease;
 }
 
-.flip > div {
-  position: absolute;
-  width: 100%;
-  height: 50%;
+.calendar_year.is_hidden{
+  opacity: 0;
+}
+
+.calendar_year .prefix{
+  display:inline-block;
+}
+
+/* 2 slots (decenas + unidades) */
+.calendar_year .slots{
+    display:inline-flex;
+  align-items:center;
+}
+
+/* Ventana/slot para cada dígito */
+.calendar_year .slot{
+  position: relative;
+  display:inline-block;
+  width: 0.7em;
+  height: 1em;
   overflow: hidden;
-  background: #ffffff;
-  border: 6px solid #2a1a12;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.flip > div.top {
-  top: 0;
-  border-radius: 12px 12px 0 0;
-  border-bottom: 3px solid #2a1a12;
-}
-
-.flip > div.bottom {
-  bottom: 0;
-  border-radius: 0 0 12px 12px;
-  border-top: 3px solid #2a1a12;
-}
-
-.flip > div span {
-  position: absolute;
+/* Dígito dentro del slot */
+.calendar_year .digit{
+  position:absolute;
   left: 0;
   right: 0;
-  line-height: 250px;
-}
-
-.flip > div.top span {
   top: 0;
+
+  display:flex;
+  justify-content: center;
+
+  will-change: transform, opacity;
+  transform: translateY(0);
+  opacity: 1;
 }
 
-.flip > div.bottom span {
-  bottom: 0;
+/* sale hacia ARRIBA */
+.calendar_year .digit.is_out{
+  animation: digit_out 160ms ease-in forwards;
 }
 
-.flip > div.flip-top {
-  top: 0;
-  z-index: 3;
-  background: #ffffff;
-  border-radius: 12px 12px 0 0;
-  border-bottom: 3px solid #2a1a12;
-  transform-origin: bottom;
-  animation: flip-top 0.6s ease-in-out;
+/* entra desde ABAJO */
+.calendar_year .digit.is_in{
+  animation: digit_in 160ms ease-out forwards;
 }
 
-.flip > div.flip-bottom {
-  bottom: 0;
-  z-index: 2;
-  background: #ffffff;
-  border-radius: 0 0 12px 12px;
-  border-top: 3px solid #2a1a12;
-  transform-origin: top;
-  animation: flip-bottom 0.6s ease-in-out 0.3s;
+@keyframes digit_out{
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(-0.55em); opacity: 0; }
 }
 
-@keyframes flip-top {
-  0% { transform: rotateX(0deg); }
-  100% { transform: rotateX(-90deg); }
+@keyframes digit_in{
+  from { transform: translateY(0.55em); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes flip-bottom {
-  0% { transform: rotateX(90deg); }
-  100% { transform: rotateX(0deg); }
+
+.calendar_text{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  font-family: "Cinzel", serif;
+  font-size: 34px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--text);
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.calendar_text.is_visible{
+  opacity: 1;
+}
+
+.calendar_text .line{
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.calendar_text .line.is_visible{
+  opacity: 1;
 }
